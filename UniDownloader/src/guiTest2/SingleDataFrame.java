@@ -1,32 +1,25 @@
-package guiTest;
+package guiTest2;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
-
-
-
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-public class TestLoginFrame extends JFrame {
+import guiTest2.LoginSingleData;
+
+public class SingleDataFrame extends JFrame {
 	// Link zum original Beispiel
 	// https://www.computerbase.de/forum/showthread.php?t=1456491
-	// TODO ueberall mit Kommentar "// original" kann Zeile geloescht werden
 
 	private JTextField nameField;
 	private JPasswordField pwField;
@@ -37,7 +30,7 @@ public class TestLoginFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static String OK = "ok";
 
-	public TestLoginFrame() {
+	public SingleDataFrame() {
 		super("Einstellungen");
 		setLayout(new FlowLayout());
 		JPanel mainPanel = new JPanel();
@@ -46,7 +39,7 @@ public class TestLoginFrame extends JFrame {
 
 		textPanel = new JPanel();
 		textPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		
+
 		add(textPanel);
 
 		// Komponenten
@@ -66,17 +59,6 @@ public class TestLoginFrame extends JFrame {
 		mainPanel.add(pwField);
 		mainPanel.add(okBtn);
 		mainPanel.add(wrongLabel);
-		
-		
-
-	//	textArea = new JTextArea(55, 60); // zeilen, reihe
-	//	textArea.setBackground(Color.CYAN);
-	//	textPanel.add(textArea);
-		
-	//	JScrollPane scrollPane = new JScrollPane();
-	//	textArea.add(scrollPane);
-	//	JScrollBar scrollBar = new JScrollBar();
-	//	scrollPane.add(scrollBar);
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(800, 1000);// pack();
@@ -101,37 +83,39 @@ public class TestLoginFrame extends JFrame {
 				char[] input = pwField.getPassword();
 				enterPW = String.valueOf(input);
 				System.out.println("enterPW" + enterPW);
-				// ////Texteingabe dem LoginEMIL-Objekt als Parameter übergeben
-				// ////
-
-				 LoginEMIL login = new LoginEMIL(enterName, enterPW);
-				// textPanel.add(login.getTextArea());
-			//	 display.setEditable ( false ); // set textArea non-editable
-				 textArea = new JTextArea(55, 60);
-				 textArea = login.getTextArea();
-				 ////////////////////
-				 
-				 JScrollPane scrollPane = new JScrollPane(textArea);
-					scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-				//	scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-					
-					//textAreaReturn.add(scrollPane);
-				//	JScrollBar scrollBar = new JScrollBar();
-				//	scrollPane.add(scrollBar);
-					
-					textPanel.setBorder ( new TitledBorder ( new EtchedBorder (), "Display Area" ) );
-					textPanel.add ( scrollPane );
-					
-				 ////////////////////////
 				
-				 //textPanel.add(textArea, FlowLayout.LEFT);
-				 
-				// textArea = new JTextArea(String.valueOf(login.getDoc()));  
-				// textArea = new JTextArea(String.valueOf(login.getDoc()));   
-				 
+				// ////Texteingabe dem LoginEMIL-Objekt als Parameter übergeben
+
+				LoginSingleData login = new LoginSingleData();
+				try {
+					login.getScrapedSingleData(enterName,enterPW);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					System.out.println("Login fehlgeschlagen.");
+					e1.printStackTrace();
+				}
+
+				// display.setEditable ( false ); // set textArea non-editable
+				textArea = new JTextArea(55, 60);
+				textArea = login.getTextArea();
+				// //////////////////
+
+				JScrollPane scrollPane = new JScrollPane(textArea);
+				scrollPane
+						.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+				// scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+				// textAreaReturn.add(scrollPane);
+				// JScrollBar scrollBar = new JScrollBar();
+				// scrollPane.add(scrollBar);
+
+				textPanel.setBorder(new TitledBorder(new EtchedBorder(),
+						"Display Area"));
+				textPanel.add(scrollPane);
+
 				// Zero out the possible password, for security.
-				Arrays.fill(input, '0'); // weiß nicht obs geht 
-				 pwField.selectAll(); // weiß nicht obs geht 
+				Arrays.fill(input, '0'); // weiß nicht obs geht
+				pwField.selectAll(); // weiß nicht obs geht
 				// resetFocus(true);
 
 			} else {
@@ -140,25 +124,14 @@ public class TestLoginFrame extends JFrame {
 
 			}
 		}
-		
-		
 
-		/*
-		 * if (isPasswordCorrect(input)) {
-		 * JOptionPane.showMessageDialog(controllingFrame,
-		 * "Success! You typed the right password."); } else {
-		 * JOptionPane.showMessageDialog(controllingFrame,
-		 * "Invalid password. Try again.", "Error Message",
-		 * JOptionPane.ERROR_MESSAGE); }
-		 */
-
-		// ////////////////////////////////////
+		LoginSingleData singleData = new LoginSingleData();
 
 	}
 
 	public static void main(String[] args) {
-		new TestLoginFrame();
-
+		// TODO Auto-generated method stub
+		new SingleDataFrame();
 	}
 
 }
