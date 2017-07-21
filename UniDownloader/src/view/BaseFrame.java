@@ -1,45 +1,36 @@
 package view;
 
-import java.awt.FlowLayout;
-import java.awt.event.KeyEvent;
-
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import java.awt.Color;
 
-import view.BoardFrame;
 
-public class BaseFrame extends BoardFrame {
+import view.MenuBarFrame;
 
-	public BaseFrame(){
+// Diese Klasse (BaseFrame) baut Klassen (MenuBarFrame, baseFrameComponents)  der View zusammen
+// MenuBarFrame erweitert JMenuBar und beinhaltet alles was zur Emnüleiste gehört 
+// BaseFrameComponents erweitert JPanel und beinhaltet alle anderen Swing Komponenten des Hauptfensters
 
-/////// MainMenueBar	
-		JMenuBar menuBar = new JMenuBar();
-		add(menuBar);
+public class BaseFrame extends JFrame {
 
-		JMenu menu = new JMenu("Menü");
-		//menu.setMnemonic(KeyEvent.VK_A);
-		menuBar.add(menu);
+	private static final long serialVersionUID = 1637266512734730868L;
+
+	public BaseFrame() {
+		setTitle("UniDownloader");
 		
-		JMenuItem menuItem = new JMenuItem("Einstellungen ...");
-		menu.add(menuItem);
+		JMenuBar menuBar = new MenuBarFrame();
+		setJMenuBar(menuBar);
 
-		menu.addSeparator();
-	
-		JMenuItem menuItem2 = new JMenuItem("Beenden");
-		menu.add(menuItem2);
+		JPanel baseFrameComponents = new BaseFrameComponents();
+		baseFrameComponents.setBackground(Color.ORANGE);
+		add(baseFrameComponents);
 
-		setJMenuBar(menuBar); // lässt Menüleiste anzeigen
-		
-////////// allgemeine Fenstereinstellungen
+		// //////// allgemeine Fenstereinstellungen
 		// Beenden mit Fentsterschluss
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
-		pack();//setSize(300, 200); // Breite, Höhe in px
-		setVisible(true); 
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(800, 600); // Breite, Höhe in px; pack();
+		setVisible(true);
 	}
-	
 
 }
