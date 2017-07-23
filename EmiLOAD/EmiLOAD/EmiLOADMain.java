@@ -1,16 +1,15 @@
 package EmiLOAD;
-import java.io.IOException;
-
 import javax.swing.JFrame;
 
+import java.io.IOException;
 
-public class EmiLOADMain{
-	
-	public static void main(String[] args) throws IOException {
-		EmiLOADView frame = new EmiLOADView();
+
+public class EMILoadMAIN{
+
+	public static void main(String[] args){
+		EMILoadVIEW frame = new EMILoadVIEW();
+		frame.setSize(1024,768);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(800,600);
 		frame.setVisible(true);
 	}
-
 }

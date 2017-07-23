@@ -12,7 +12,7 @@ import org.jsoup.select.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener; 
 
-public class EmiLOADView extends JFrame{
+public class EmiLOADView___ALT extends JFrame{
 	
 	//Globale Variablen initiieren
 	private static final long serialVersionUID = 1L;
@@ -31,7 +31,7 @@ public class EmiLOADView extends JFrame{
 	String keineAusrede;
 	
 	//Konstuktor
-	public EmiLOADView() throws IOException{
+	public EmiLOADView___ALT() throws IOException{
 	super("EMILoader");
 	
 	menuBar = new JMenuBar();
@@ -72,7 +72,7 @@ public class EmiLOADView extends JFrame{
 			 area.setText("");
 			
 			try{
-				Connection.Response res = Jsoup.connect("https://www.elearning.haw-hamburg.de/login/index.php")
+				Connection.Response res = Jsoup.connect(sourceURL)
 						 // TODO meinUsername + meinPW ausfuellen:
 								.data("username", userID, "password", passwordID) 
 								.method(Method.POST).execute();
