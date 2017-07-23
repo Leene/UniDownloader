@@ -35,21 +35,21 @@ public class EMILoadVIEW extends JFrame{
 		super("EMILoad");
 		
 		//Die URL festlegen, die geparsed werden und als Hauptnavigation werden soll
-		//Als Variable, damit sie im Falle einer Veränderung schnell angepasst werden kann
+		//Als Variable, damit sie im Falle einer VerÃ¤nderung schnell angepasst werden kann
 		sourceURL = "https://www.elearning.haw-hamburg.de/login/index.php";
 		
-		//Menubar erstellen, mit Menu "Bearbeiten" und dessen MenuItems "Optionen" und "Schließen" füllen
+		//Menubar erstellen, mit Menu "Bearbeiten" und dessen MenuItems "Optionen" und "SchlieÃŸen" fÃ¼llen
 		menubar = new JMenuBar();
 		menu = new JMenu("Bearbeiten");
 		options = new JMenuItem("Optionen");
-		close = new JMenuItem("Schließen");
+		close = new JMenuItem("SchlieÃŸen");
 		
 		menubar.add(menu);
 			menu.add(options);
 			menu.add(close);
 		
 		//Dialog mit dem Klick auf "Optionen" aufrufen
-		//Größe, Layout und Schließfunktion festlegen (in den Hintergrund)
+		//GrÃ¶ÃŸe, Layout und SchlieÃŸfunktion festlegen (in den Hintergrund)
 		
 		optionDialog = new JDialog();
 		optionDialog.setSize(600,600);
@@ -69,7 +69,7 @@ public class EMILoadVIEW extends JFrame{
 						passwordIDField = new JPasswordField(10);
 					submit = new JButton("submit");
 					
-		//Angemeldeten Kurse in ScrollPane, Checkboxen zum auswählen der Kurse		
+		//Angemeldeten Kurse in ScrollPane, Checkboxen zum auswÃ¤hlen der Kurse		
 			unlockedCoursesPanel = new JPanel();
 				ucp = new JScrollPane(unlockedCoursesPanel);
 					unlockedCourses = new JLabel("Angemeldete Kurse von " + userID);
@@ -77,23 +77,23 @@ public class EMILoadVIEW extends JFrame{
 		//FileChooser mit Klick auf "searchBtn", um den Speicherort der Downloads zu bestimmen
 			saveDir = new JPanel();
 				saveDirField = new JTextField(10);
-				open = new JButton("Öffnen");
+				open = new JButton("Ã–ffnen");
 				
-		//Änderungen, die über den Dialog vorgenommen wurden, übernehmen oder abbrechen
+		//Ã„nderungen, die Ã¼ber den Dialog vorgenommen wurden, Ã¼bernehmen oder abbrechen
 			dialogResult = new JPanel();
-				saveDialog = new JButton("Übernehmen");
+				saveDialog = new JButton("Ãœbernehmen");
 				cancelDialog = new JButton("Abbrechen");
 				
 		//#################################################################################				
 		
-		//Layout für Hauptpanel im Dialog festlegen, BoxLayout von oben nach unten		
+		//Layout fÃ¼r Hauptpanel im Dialog festlegen, BoxLayout von oben nach unten		
 		dialogPanel.setLayout(new BoxLayout(dialogPanel, BoxLayout.PAGE_AXIS));
 		
 		//Das erste Panel im Dialog, BoyLayout (v.o.n.u.), loginPanel mit GridLayout integriert
 		sourceLoginPanel.setLayout(new BoxLayout(sourceLoginPanel, BoxLayout.PAGE_AXIS));
 			loginPanel.setLayout(new GridLayout(2,2));
 		
-		//Scrollbalken an der Seite und preferierte Größe des Panels für Scrollpane festlegen
+		//Scrollbalken an der Seite und preferierte GrÃ¶ÃŸe des Panels fÃ¼r Scrollpane festlegen
 		ucp.setVerticalScrollBarPolicy(ucp.VERTICAL_SCROLLBAR_ALWAYS);
 		ucp.setPreferredSize(new Dimension(200,100));
 		unlockedCoursesPanel.setLayout(new BoxLayout(unlockedCoursesPanel, BoxLayout.Y_AXIS));
@@ -102,12 +102,12 @@ public class EMILoadVIEW extends JFrame{
 		//Layout vom Filechooser Panel
 		saveDir.setLayout(new FlowLayout());
 		
-		//Layout vom letzten Panel zur Übernahme der Angaben
+		//Layout vom letzten Panel zur Ãœbernahme der Angaben
 		dialogResult.setLayout(new FlowLayout());
 		
 	//#######################################################
 				
-		//ActionListener für den submit Button des Logins
+		//ActionListener fÃ¼r den submit Button des Logins
 		submit.addActionListener(new ActionListener(){
 		
 		public void actionPerformed(ActionEvent submitKlicked){
@@ -116,8 +116,8 @@ public class EMILoadVIEW extends JFrame{
 			
 			try{
 				Connection.Response res = Jsoup.connect(sourceURL)
-						// TODO für "username" den Input des userID String
-						// TODO für "password" den Input des passwordID String
+						// TODO fÃ¼r "username" den Input des userID String
+						// TODO fÃ¼r "password" den Input des passwordID String
 						.data("username", userID, "password", passwordID)
 						.method(Method.POST).execute();
 				
@@ -137,15 +137,26 @@ public class EMILoadVIEW extends JFrame{
 				//Selektiert aus den gefilterten Links nur den jeweiligen Titel
 					Elements titles = kursIDs.select("a[href][title]");
 					
-						for (Element title: titles){
-							//System.out.println(t.attr("title"));
-							String t = title.attr("title") + ";";
-							String[] course = t.split(";");
-								for(int i=0; i<course.length; i++){
-									System.out.println(course[i]);
-					        }
+//////////////////////////////////////////////////////////////////////////////
+					ArrayList<String> arrayListCourse = new ArrayList<String>();
+					for (Element title : titles) {
+						// System.out.println(t.attr("title"));
+						String t = title.attr("title") + ";";
+						String[] course = t.split(";");
+
+						for (int i = 0; i < course.length; i++) {
+							System.out.println(course[i] + "what");
+
+							arrayListCourse.add(course[i]);
+							System.out.println("arrayListCourse: "+ arrayListCourse.get(i) + "Anzahl: " + arrayListCourse.size());
 						}
-				
+						
+					}
+					
+					System.out.println(" fertige arrayListCourse: "+ arrayListCourse + "Anzahl: " + arrayListCourse.size());
+					System.out.println("4. Element: "+ arrayListCourse.get(3));
+					
+/////////////////////////////////////////////////////////////////////////////////
 				//Selektiert aus den gefilterten Links nur die URL http://(...).id=xyz
 					for(Element link: links){
 						String l = link.attr("href");
@@ -163,7 +174,7 @@ public class EMILoadVIEW extends JFrame{
 			}
 		}});
 		
-		//ActionListener für den FileChooser
+		//ActionListener fÃ¼r den FileChooser
 		open.addActionListener(new ActionListener(){
 			    
 	    public void actionPerformed(ActionEvent e){	
@@ -194,7 +205,7 @@ public class EMILoadVIEW extends JFrame{
 				optionDialog.setVisible(true);		    	
 		    }});
 		
-		//Nur zum Testen, hier wird später der Name verwendet
+		//Nur zum Testen, hier wird spÃ¤ter der Name verwendet
 		
 		JPanel idPanel = new JPanel();
 		JLabel courseLabel = new JLabel("Angemeldete Kurse zum Synchronisieren von " + userIDField.getText());
