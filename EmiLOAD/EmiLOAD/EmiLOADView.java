@@ -27,6 +27,9 @@ public class EMILoadVIEW extends JFrame{
 	JLabel userIDLabel, passwordIDLabel, unlockedCourses;
 	JButton submit, open, saveDialog, cancelDialog;
 	JDialog optionDialog;
+	ArrayList<String> arrayListCourses;
+	JCheckBox boxes;
+	String[] check;
 	
 	//############################################################//
 	
@@ -35,21 +38,21 @@ public class EMILoadVIEW extends JFrame{
 		super("EMILoad");
 		
 		//Die URL festlegen, die geparsed werden und als Hauptnavigation werden soll
-		//Als Variable, damit sie im Falle einer VerÃ¤nderung schnell angepasst werden kann
+		//Als Variable, damit sie im Falle einer Veränderung schnell angepasst werden kann
 		sourceURL = "https://www.elearning.haw-hamburg.de/login/index.php";
 		
-		//Menubar erstellen, mit Menu "Bearbeiten" und dessen MenuItems "Optionen" und "SchlieÃŸen" fÃ¼llen
+		//Menubar erstellen, mit Menu "Bearbeiten" und dessen MenuItems "Optionen" und "Schließen" füllen
 		menubar = new JMenuBar();
 		menu = new JMenu("Bearbeiten");
 		options = new JMenuItem("Optionen");
-		close = new JMenuItem("SchlieÃŸen");
+		close = new JMenuItem("Schließen");
 		
 		menubar.add(menu);
 			menu.add(options);
 			menu.add(close);
 		
 		//Dialog mit dem Klick auf "Optionen" aufrufen
-		//GrÃ¶ÃŸe, Layout und SchlieÃŸfunktion festlegen (in den Hintergrund)
+		//Größe, Layout und Schließfunktion festlegen (in den Hintergrund)
 		
 		optionDialog = new JDialog();
 		optionDialog.setSize(600,600);
@@ -69,7 +72,7 @@ public class EMILoadVIEW extends JFrame{
 						passwordIDField = new JPasswordField(10);
 					submit = new JButton("submit");
 					
-		//Angemeldeten Kurse in ScrollPane, Checkboxen zum auswÃ¤hlen der Kurse		
+		//Angemeldeten Kurse in ScrollPane, Checkboxen zum auswählen der Kurse		
 			unlockedCoursesPanel = new JPanel();
 				ucp = new JScrollPane(unlockedCoursesPanel);
 					unlockedCourses = new JLabel("Angemeldete Kurse von " + userID);
@@ -77,23 +80,23 @@ public class EMILoadVIEW extends JFrame{
 		//FileChooser mit Klick auf "searchBtn", um den Speicherort der Downloads zu bestimmen
 			saveDir = new JPanel();
 				saveDirField = new JTextField(10);
-				open = new JButton("Ã–ffnen");
+				open = new JButton("Öffnen");
 				
-		//Ã„nderungen, die Ã¼ber den Dialog vorgenommen wurden, Ã¼bernehmen oder abbrechen
+		//Änderungen, die über den Dialog vorgenommen wurden, übernehmen oder abbrechen
 			dialogResult = new JPanel();
-				saveDialog = new JButton("Ãœbernehmen");
+				saveDialog = new JButton("Übernehmen");
 				cancelDialog = new JButton("Abbrechen");
 				
 		//#################################################################################				
 		
-		//Layout fÃ¼r Hauptpanel im Dialog festlegen, BoxLayout von oben nach unten		
+		//Layout für Hauptpanel im Dialog festlegen, BoxLayout von oben nach unten		
 		dialogPanel.setLayout(new BoxLayout(dialogPanel, BoxLayout.PAGE_AXIS));
 		
 		//Das erste Panel im Dialog, BoyLayout (v.o.n.u.), loginPanel mit GridLayout integriert
 		sourceLoginPanel.setLayout(new BoxLayout(sourceLoginPanel, BoxLayout.PAGE_AXIS));
 			loginPanel.setLayout(new GridLayout(2,2));
 		
-		//Scrollbalken an der Seite und preferierte GrÃ¶ÃŸe des Panels fÃ¼r Scrollpane festlegen
+		//Scrollbalken an der Seite und preferierte Größe des Panels für Scrollpane festlegen
 		ucp.setVerticalScrollBarPolicy(ucp.VERTICAL_SCROLLBAR_ALWAYS);
 		ucp.setPreferredSize(new Dimension(200,100));
 		unlockedCoursesPanel.setLayout(new BoxLayout(unlockedCoursesPanel, BoxLayout.Y_AXIS));
@@ -102,12 +105,14 @@ public class EMILoadVIEW extends JFrame{
 		//Layout vom Filechooser Panel
 		saveDir.setLayout(new FlowLayout());
 		
-		//Layout vom letzten Panel zur Ãœbernahme der Angaben
+		//Layout vom letzten Panel zur Übernahme der Angaben
 		dialogResult.setLayout(new FlowLayout());
 		
 	//#######################################################
-				
-		//ActionListener fÃ¼r den submit Button des Logins
+		
+		arrayListCourses = new ArrayList<String>();
+		
+		//ActionListener für den submit Button des Logins
 		submit.addActionListener(new ActionListener(){
 		
 		public void actionPerformed(ActionEvent submitKlicked){
@@ -116,8 +121,8 @@ public class EMILoadVIEW extends JFrame{
 			
 			try{
 				Connection.Response res = Jsoup.connect(sourceURL)
-						// TODO fÃ¼r "username" den Input des userID String
-						// TODO fÃ¼r "password" den Input des passwordID String
+						// TODO für "username" den Input des userID String
+						// TODO für "password" den Input des passwordID String
 						.data("username", userID, "password", passwordID)
 						.method(Method.POST).execute();
 				
@@ -136,27 +141,29 @@ public class EMILoadVIEW extends JFrame{
 					
 				//Selektiert aus den gefilterten Links nur den jeweiligen Titel
 					Elements titles = kursIDs.select("a[href][title]");
-					
-//////////////////////////////////////////////////////////////////////////////
-					ArrayList<String> arrayListCourse = new ArrayList<String>();
-					for (Element title : titles) {
-						// System.out.println(t.attr("title"));
-						String t = title.attr("title") + ";";
-						String[] course = t.split(";");
-
-						for (int i = 0; i < course.length; i++) {
-							System.out.println(course[i] + "what");
-
-							arrayListCourse.add(course[i]);
-							System.out.println("arrayListCourse: "+ arrayListCourse.get(i) + "Anzahl: " + arrayListCourse.size());
+						for (Element title: titles){
+							// System.out.println(t.attr("title"));
+							String t = title.attr("title") + ";";
+							String[] course = t.split(";");
+								for (int i = 0; i < course.length; i++) {
+									arrayListCourses.add(course[i]);
+									boxes = new JCheckBox(course[i]);
+									boxes.addItemListener(new CheckListener());
+									unlockedCoursesPanel.add(boxes);
+									unlockedCoursesPanel.revalidate();									
+									
+									boxes.addActionListener(new ActionListener(){
+										public void actionPerformed(ActionEvent e){
+											
+										}
+									});
+								}
 						}
 						
-					}
-					
-					System.out.println(" fertige arrayListCourse: "+ arrayListCourse + "Anzahl: " + arrayListCourse.size());
-					System.out.println("4. Element: "+ arrayListCourse.get(3));
-					
-/////////////////////////////////////////////////////////////////////////////////
+						System.out.println(" fertige arrayListCourse: "+ arrayListCourses + "Anzahl: " + arrayListCourses.size());
+//						System.out.println(" fertige arrayListCourse: "+ arrayListCourses + "Anzahl: " + arrayListCourses.size());
+//						System.out.println("4. Element: "+ arrayListCourses.get(3));
+				
 				//Selektiert aus den gefilterten Links nur die URL http://(...).id=xyz
 					for(Element link: links){
 						String l = link.attr("href");
@@ -174,7 +181,16 @@ public class EMILoadVIEW extends JFrame{
 			}
 		}});
 		
-		//ActionListener fÃ¼r den FileChooser
+		 
+//		ArrayList Test
+//		ArrayList<String> list = new ArrayList<String>(2);
+//		list.add("Hallo");
+//		list.add("CheckBox");
+//		for(String element : list){
+//		JCheckBox boxes = new JCheckBox(element);
+//		unlockedCoursesPanel.add(boxes);}
+		
+		//ActionListener für den FileChooser
 		open.addActionListener(new ActionListener(){
 			    
 	    public void actionPerformed(ActionEvent e){	
@@ -186,7 +202,8 @@ public class EMILoadVIEW extends JFrame{
 	    	// disable the "All files" option.
 	    	//
 	    	saveDirChooser.setAcceptAllFileFilterUsed(false);
-	    	//    
+	    	//
+	    	//TODO Durch Verändern des ActionListeners Fehler ausgelöst
 	    	if (saveDirChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) { 
 	    		System.out.println("getCurrentDirectory(): " 
 	    				+  saveDirChooser.getCurrentDirectory());
@@ -205,7 +222,7 @@ public class EMILoadVIEW extends JFrame{
 				optionDialog.setVisible(true);		    	
 		    }});
 		
-		//Nur zum Testen, hier wird spÃ¤ter der Name verwendet
+		//Nur zum Testen, hier wird später der Name verwendet
 		
 		JPanel idPanel = new JPanel();
 		JLabel courseLabel = new JLabel("Angemeldete Kurse zum Synchronisieren von " + userIDField.getText());
@@ -246,4 +263,27 @@ public class EMILoadVIEW extends JFrame{
 		
 		optionDialog.add(dialogPanel);		
 	}
+	
+	private class CheckListener implements ItemListener {
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			if(e.getStateChange() == ItemEvent.SELECTED) {//checkbox has been selected
+	            //TODO Index der Checkbox mit Index der Kurslinks abgleichen
+				//Über Kurslinks Dateien des Kurses parsen 
+				//Data und Ordner runterladen
+				//Benötigt: Arraylist Kurslinks
+	        } else {//checkbox has been deselected
+	            //do nothing
+	        	//User darüber informieren, dass er einen Kurs wählen muss
+	        };			
+		}
+	}	
 }
+
+
+//TODO GLOBALE GEDANKENSTÜTZE! 
+//TextField der Source URL muss auf not editable gesetzt werden
+//FileChooser ActionListener reparieren
+//MVC in irgendeiner Form nutzen (fast 300 Zeilen sind ein kleines bisschen zu viel)
+//Dialog hängt nicht mit dem richtigen Hauptfenster zusammen, nur mit Testfenster
