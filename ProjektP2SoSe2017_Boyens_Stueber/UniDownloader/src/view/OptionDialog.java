@@ -5,19 +5,36 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.IOException;
 import java.util.ArrayList;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.Connection.Method;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+
+
+import controller.CheckListener;
 import controller.LoginListener;
 
 public class OptionDialog extends JDialog {
@@ -29,8 +46,8 @@ public class OptionDialog extends JDialog {
 	private String saveDirPath;
 	private JTextField saveDirField;
 	private JTextField sourceURLField;
-	private JTextField userIDField;
-	private JPasswordField passwordIDField;
+	  public JTextField userIDField;
+	  public JPasswordField passwordIDField;
 	private JPanel dialogPanel;
 	private JPanel sourceLoginPanel;
 	private JPanel loginPanel;
@@ -49,7 +66,8 @@ public class OptionDialog extends JDialog {
 	private ArrayList<String> arrayListCourses;
 	private JCheckBox boxes;
 	private String[] check;
-
+	
+	@SuppressWarnings("static-access")
 	public OptionDialog(String title, boolean modal) {
 		setTitle(title);
 		
@@ -82,6 +100,7 @@ public class OptionDialog extends JDialog {
 		saveDir = new JPanel();
 		saveDirField = new JTextField(10);
 		open = new JButton("Öffnen");
+		open.addActionListener(new OpenListener());
 
 		// Änderungen, die über den Dialog vorgenommen wurden, übernehmen oder
 		// abbrechen
@@ -163,16 +182,96 @@ public class OptionDialog extends JDialog {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);
 
+		
+//////////////////Listener
+arrayListCourses = new ArrayList<String>();
+
+//ActionListener für den submit Button des Logins
+submit.addActionListener(new ActionListener(){
+
+public void actionPerformed(ActionEvent submitKlicked){
+userID = userIDField.getText(); 
+passwordID = passwordIDField.getText();
+
+try{
+	Connection.Response res = Jsoup.connect(sourceURL)
+			// TODO für "username" den Input des userID String
+			// TODO für "password" den Input des passwordID String
+			.data("username", userID, "password", passwordID)
+			.method(Method.POST).execute();
+	
+	Document doc = res.parse();
+	String sessionId = res.cookie("MoodleSession");
+	
+	Document doc2 = Jsoup.connect("https://www.elearning.haw-hamburg.de/my/")
+			.cookie("MoodleSession", sessionId)
+			.get();
+	
+	//Parsed den gesamten html Inhalt der class:"course_title"
+		Elements kursIDs = doc2.getElementsByClass("course_title");
+		
+	//Filtert aus dem geparsden html Code alle a[href] tags
+		Elements links = kursIDs.select("a[href]");
+		
+	//Selektiert aus den gefilterten Links nur den jeweiligen Titel
+		Elements titles = kursIDs.select("a[href][title]");
+			for (Element title: titles){
+				// System.out.println(t.attr("title"));
+				String t = title.attr("title") + ";";
+				String[] course = t.split(";");
+					for (int i = 0; i < course.length; i++) {
+						arrayListCourses.add(course[i]);
+						boxes = new JCheckBox(course[i]);
+						boxes.addItemListener(new CheckListener());
+						unlockedCoursesPanel.add(boxes);
+						unlockedCoursesPanel.revalidate();									
+						
+						boxes.addActionListener(new ActionListener(){
+							public void actionPerformed(ActionEvent e){
+								
+							}
+						});
+					}
+			}
+			
+			System.out.println(" fertige arrayListCourse: "+ arrayListCourses + "Anzahl: " + arrayListCourses.size());
+//			System.out.println(" fertige arrayListCourse: "+ arrayListCourses + "Anzahl: " + arrayListCourses.size());
+//			System.out.println("4. Element: "+ arrayListCourses.get(3));
+	
+	//Selektiert aus den gefilterten Links nur die URL http://(...).id=xyz
+		for(Element link: links){
+			String l = link.attr("href");
+			if(l.length()>0){
+				if(l.length()<4)
+					l = doc.baseUri()+l.substring(1);
+				else if(!l.substring(0, 4).equals("http"))
+					l = doc.baseUri()+l.substring(1);
+				}
+			System.out.println(l);
+		}
+}				
+catch(IOException submitKlicked1){
+	System.out.println("Fehler");
+}
+}});
+
+//ActionListener für den FileChooser
+
+
+		
+		
+	}// Konstruktor
+	
+	/*
+	public String getUserIDField (){
+		return userIDField.getText();
 	}
 	
-	public JTextField getUserIDField (){
-		return userIDField;
+	public String getPasswordIDField (){
+		return passwordIDField.getText();
+		
 	}
-	
-	public JPasswordField getPasswordIDField (){
-		return passwordIDField;
-	}
-	
+	*/
 	
 	public String getSourceURL (){
 		return sourceURL;
@@ -192,8 +291,48 @@ public class OptionDialog extends JDialog {
 		return submit;
 	}
 	
+
+	public class OpenListener implements ActionListener {
+		
+		public void actionPerformed(ActionEvent e){	
 	
+	  	JFileChooser saveDirChooser = new JFileChooser(); 
+	  	saveDirChooser.setCurrentDirectory(new java.io.File("."));
+	  	saveDirChooser.setDialogTitle(saveDirPath);
+	  	saveDirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+	  	//
+	  	// disable the "All files" option.
+	  	//
+	  	saveDirChooser.setAcceptAllFileFilterUsed(false);
+	  	//
+	  	//TODO Durch Verändern des ActionListeners Fehler ausgelöst
+	  	if (saveDirChooser.showSaveDialog(OptionDialog.this) == JFileChooser.APPROVE_OPTION) { 
+	  		System.out.println("getCurrentDirectory(): " 
+	  				+  saveDirChooser.getCurrentDirectory());
+	  		System.out.println("getSelectedFile() : " 
+	  				+  saveDirChooser.getSelectedFile());
+	  		saveDirField.setText(saveDirChooser.getSelectedFile().getPath());
+	  	}
+	  	else {
+	  		System.out.println("No Selection ");
+	  	}
+	  }
 	
+public class CheckListener implements ItemListener {
+
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+					if(e.getStateChange() == ItemEvent.SELECTED) {//checkbox has been selected
+			            //TODO Index der Checkbox mit Index der Kurslinks abgleichen
+						//Über Kurslinks Dateien des Kurses parsen 
+						//Data und Ordner runterladen
+						//Benötigt: Arraylist Kurslinks
+			        } else {//checkbox has been deselected
+			            //do nothing
+			        	//User darüber informieren, dass er einen Kurs wählen muss
+			        };			
+				}
+			}
 	
-	
+}
 }

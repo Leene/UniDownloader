@@ -29,7 +29,7 @@ public class BaseFrame extends JFrame {
 		 menuBar = new MenuBarFrame();
 		setJMenuBar(menuBar);
 
-		JPanel baseFrameComponents = new BaseFrameComponents();
+		JPanel baseFrameComponents = new BaseFrameComponents00();
 		baseFrameComponents.setBackground(Color.ORANGE);
 		add(baseFrameComponents);
 		

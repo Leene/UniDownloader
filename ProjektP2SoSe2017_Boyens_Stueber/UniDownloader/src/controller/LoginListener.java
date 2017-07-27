@@ -7,6 +7,8 @@ import java.awt.event.ItemListener;
 import java.io.IOException;
 
 import javax.swing.JCheckBox;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -18,23 +20,32 @@ import org.jsoup.select.Elements;
 import view.OptionDialog;
 
 public class LoginListener extends MenuListener implements ActionListener {
-	private String userID;
-	private String passwordID;
-
+	
+	private JTextField userID;
+	private JPasswordField passwordID;
+	private String sourceURL = "https://www.elearning.haw-hamburg.de/login/index.php";
+	public OptionDialog optiondialog;
 
 	public void actionPerformed(ActionEvent submitKlicked) {
-		System.out.println("optionDialog.getUserIDField().getText()" + optionDialog.getUserIDField().getText());
-		userID = optionDialog.getUserIDField().getText();
+	//	System.out.println("optionDialog.getUserIDField().getText()" + optionDialog.getUserIDField().getText());
+	//	System.out.println("optionDialog.getUserIDField().getText()");
+		
+		userID = optionDialog.userIDField;
+		
+		
 		// userID = getUserIDField().getText();
-		passwordID = optionDialog.getPasswordIDField().getText();
-
+		passwordID = optionDialog.passwordIDField;
+		
+		
+		System.out.println("userID" + userID);
+		System.out.println("passwordID" + passwordID);
 		
 		try {
 			Connection.Response res = Jsoup
-					.connect(optionDialog.getSourceURL())
+					.connect(sourceURL)
 					// TODO für "username" den Input des userID String
 					// TODO für "password" den Input des passwordID String
-					.data("username", userID, "password", passwordID)
+					.data("username", userID.getText(), "password", passwordID.getText())
 					.method(Method.POST).execute();
 
 			Document doc = res.parse();

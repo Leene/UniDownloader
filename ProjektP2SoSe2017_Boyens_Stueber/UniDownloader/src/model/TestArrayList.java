@@ -52,14 +52,14 @@ public class TestArrayList {
 		account.add(nwi);
 		account.add(ti);
 
-		System.out.println("account ArrayList: " + account + "Anzahl"+ account.size());
+//		System.out.println("account ArrayList: " + account + "Anzahl"+ account.size());
 	//	System.out.println("nwi ArrayList: " + nwi + "Anzahl" + nwi.size());
 	//	System.out.println("nwi1 ArrayList: " + nwi1 + "Anzahl" + nwi1.size());
 	//	System.out.println("nwi2 ArrayList: " + nwi2 + "Anzahl" + nwi2.size());
 	//	System.out.println("ti ArrayList: " + ti + "Anzahl" + ti.size());
 	//	System.out.println("ti1 ArrayList: " + ti1 + "Anzahl" + ti1.size());
 	
-		System.out.println("genaue ArrayList: " + account.get(0).get(1)); // entspricht nwi.get(1)
+//		System.out.println("genaue ArrayList: " + account.get(0).get(1)); // entspricht nwi.get(1)
 		
 		dirCount = nwi.size();
 	
@@ -72,18 +72,18 @@ public class TestArrayList {
 		//	dirHeight = dataCount * 50 + dirCount * 15 + dataCount* 5;	//(dataCount-1)
 			
 			dirHeight = dataCount * 50 + 31 + (dataCount-1)* 5;
-			System.out.println("if");
+//			System.out.println("if");
 		}else{
 			//dirHeight = dataCount * 50 + dirCount * 15;
 			dirHeight = dataCount * 50 + 31;
-			System.out.println("else");
+//			System.out.println("else");
 		}
 				
 				
-		System.out.println("dirHeight" + dirHeight);
+//		System.out.println("dirHeight" + dirHeight);
 		
 		courseHeight = dirHeight + account.size() + 20;
-		System.out.println("courseHeight" + courseHeight);
+//		System.out.println("courseHeight" + courseHeight);
 		
 
 	}
