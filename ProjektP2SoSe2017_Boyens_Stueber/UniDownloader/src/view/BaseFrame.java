@@ -2,6 +2,7 @@ package view;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -21,11 +22,11 @@ import view.MenuBarFrame;
 public class BaseFrame extends JFrame {
 
 	private static final long serialVersionUID = 1637266512734730868L;
-
+	public JMenuBar menuBar;
 	public BaseFrame() {
 		setTitle("UniDownloader");
 		
-		JMenuBar menuBar = new MenuBarFrame();
+		 menuBar = new MenuBarFrame();
 		setJMenuBar(menuBar);
 
 		JPanel baseFrameComponents = new BaseFrameComponents();
@@ -47,5 +48,7 @@ public class BaseFrame extends JFrame {
 		setSize(850, 900); // Breite, Höhe in px; pack();
 		setVisible(true);
 	}
+	
+	
 
 }
